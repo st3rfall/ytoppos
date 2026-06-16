@@ -11,7 +11,7 @@ import webbrowser
 import time
 from pathlib import Path
 from cli_logger import create_logger
-from server import run_server
+from server import run_server, find_available_port
 from youtube_downloader import create_downloader
 
 
@@ -97,14 +97,23 @@ class PrivateTubeApp:
         }
         return colors.get(color_name, '')
     
-    def start_server(self, host='localhost', port=8000, open_browser=True):
+    def start_server(self, host='localhost', port=8000, open_browser=True, auto_mode=False):
         """Start the application server"""
+        if auto_mode:
+            self.logger.info("Automatic safe mode enabled.")
+            chosen_port = find_available_port(host, port, 50)
+            if chosen_port and chosen_port != port:
+                self.logger.warning(f"Port {port} unavailable. Switching to available port {chosen_port}.")
+                port = chosen_port
+            elif chosen_port is None:
+                self.logger.warning("Could not find a free port automatically; continuing with the requested port.")
+
         self.print_welcome()
         self.print_startup_info(host, port)
         self.print_privacy_info()
         self.print_instructions(host, port)
         
-        # Open browser if requested
+        # Open browser if requested and not in auto safe mode
         if open_browser:
             self.logger.info("Opening browser...")
             try:
@@ -115,15 +124,20 @@ class PrivateTubeApp:
         
         try:
             self.logger.info("Starting web server...")
-            run_server(host=host, port=port, verbose=False)
+            run_server(host=host, port=port, verbose=False, auto_mode=auto_mode)
         except KeyboardInterrupt:
             self.print_shutdown()
             self.logger.success("Server stopped successfully")
             sys.exit(0)
         except OSError as e:
-            if "Address already in use" in str(e):
-                self.logger.error(f"Port {port} is already in use")
-                self.logger.info("Try using a different port with --port option")
+            error_msg = str(e)
+            if "Address already in use" in error_msg or "Permission denied" in error_msg:
+                self.logger.error(f"Cannot start server on {host}:{port}")
+                self.logger.error(f"Reason: {error_msg}")
+                if port < 1024:
+                    self.logger.info("Ports below 1024 require administrator privileges")
+                else:
+                    self.logger.info("Try using a different port with: python app.py --port 3000")
                 sys.exit(1)
             else:
                 self.logger.error(f"Server error: {e}")
@@ -147,6 +161,7 @@ class PrivateTubeApp:
         print("  --host HOST          Server host address (default: localhost)")
         print("  --port PORT          Server port (default: 8000)")
         print("  --no-browser         Don't open browser automatically")
+        print("  --auto, --safe-mode  Enable automatic safe mode for restricted environments")
         print("  --quiet              Suppress CLI output")
         print("  --help               Show this help message")
         print()
@@ -163,6 +178,9 @@ class PrivateTubeApp:
         print()
         print("  # Start without opening browser")
         print("  python app.py --no-browser")
+        print("  # Enable safe mode on restricted devices")
+        print("  python app.py --auto")
+        print("  python app.py --safe-mode")
         print()
 
 
@@ -180,6 +198,8 @@ def main():
                         help='Server port (default: 8000)')
     parser.add_argument('--no-browser', action='store_true',
                         help='Don\'t open browser automatically')
+    parser.add_argument('--auto', '--safe-mode', dest='auto', action='store_true',
+                        help='Enable automatic safe mode (find available port, avoid blocked browser launch)')
     parser.add_argument('--quiet', action='store_true',
                         help='Suppress CLI output')
     parser.add_argument('--help', action='store_true',
@@ -211,7 +231,8 @@ def main():
     app.start_server(
         host=args.host,
         port=args.port,
-        open_browser=not args.no_browser
+        open_browser=not args.no_browser and not args.auto,
+        auto_mode=args.auto
     )
 
 

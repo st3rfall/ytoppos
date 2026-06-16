@@ -73,6 +73,10 @@ python app.py --host 0.0.0.0
 # Don't open browser automatically
 python app.py --no-browser
 
+# Enable automatic safe mode on restricted devices
+python app.py --auto
+python app.py --safe-mode
+
 # Suppress CLI output (quiet mode)
 python app.py --quiet
 
@@ -81,6 +85,10 @@ python app.py --help
 
 # Show version
 python app.py --version
+
+### Safe Mode
+
+Use `--auto` or `--safe-mode` when running on school-controlled or restricted devices. This mode will try to find an available port automatically and avoid blocked browser launches.
 ```
 
 ## 🏗️ Project Structure

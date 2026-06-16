@@ -205,22 +205,65 @@ class DownloadRequestHandler(http.server.SimpleHTTPRequestHandler):
         return
 
 
-def run_server(host='localhost', port=8000, verbose=False):
+def find_available_port(host='localhost', start_port=8000, max_attempts=10):
+    """Find an available port starting from start_port"""
+    for port in range(start_port, start_port + max_attempts):
+        try:
+            with socketserver.TCPServer((host, port), lambda *args: None) as test_socket:
+                return port
+        except OSError:
+            continue
+    return None
+
+
+def run_server(host='localhost', port=8000, verbose=False, auto_mode=False):
     """Run the web server"""
     handler = DownloadRequestHandler
     
-    with socketserver.TCPServer((host, port), handler) as httpd:
-        if verbose:
-            print(f"✓ Server started on http://{host}:{port}")
-            print(f"✓ Open your browser to access the application")
-            print(f"✓ Press Ctrl+C to stop the server")
-        
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
+    def start_http_server(bind_port):
+        with socketserver.TCPServer((host, bind_port), handler) as httpd:
             if verbose:
-                print("\n✓ Server stopped")
-            pass
+                print(f"✓ Server started on http://{host}:{bind_port}")
+                print(f"✓ Open your browser to access the application")
+                print(f"✓ Press Ctrl+C to stop the server")
+            try:
+                httpd.serve_forever()
+            except KeyboardInterrupt:
+                if verbose:
+                    print("\n✓ Server stopped")
+                pass
+
+    try:
+        start_http_server(port)
+    except OSError as e:
+        error_msg = str(e)
+        if auto_mode and ("Address already in use" in error_msg or "Permission denied" in error_msg):
+            if verbose:
+                print(f"⚠ Port {port} is unavailable, searching for an available port...")
+            alternate_port = find_available_port(host, port + 1, 50)
+            if alternate_port:
+                if verbose:
+                    print(f"✓ Using port {alternate_port} instead")
+                start_http_server(alternate_port)
+            else:
+                if verbose:
+                    print(f"✗ Could not find an available port between {port + 1} and {port + 50}")
+                raise
+        elif "Address already in use" in error_msg:
+            if verbose:
+                print(f"⚠ Port {port} is already in use, finding alternative port...")
+            # Find available port
+            actual_port = find_available_port(host, port + 1, 10)
+            if actual_port:
+                if verbose:
+                    print(f"✓ Using port {actual_port} instead")
+                start_http_server(actual_port)
+            else:
+                if verbose:
+                    print(f"✗ Could not find an available port between {port} and {port + 10}")
+                raise
+        else:
+            raise
 
 
 if __name__ == '__main__':
