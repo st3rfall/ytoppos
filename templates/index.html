@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Privacy Downloader - Safe & Secure</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <span class="brand-text">PrivateTube</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#download" class="nav-link active">Download</a></li>
+                <li><a href="#history" class="nav-link">History</a></li>
+                <li><a href="#privacy" class="nav-link">Privacy</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Download YouTube Videos</h1>
+            <p class="hero-subtitle">Secure, Private, and Built from Scratch</p>
+            <p class="hero-description">No external dependencies. No data collection. Your privacy is our priority.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Download Section -->
+        <section id="download" class="section">
+            <div class="section-header">
+                <h2>Download Video</h2>
+                <p>Paste a YouTube URL to get started</p>
+            </div>
+
+            <div class="download-card">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="urlInput" 
+                        class="url-input" 
+                        placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                        aria-label="YouTube URL"
+                    >
+                    <button id="fetchBtn" class="btn btn-primary" aria-label="Fetch video info">
+                        <span class="btn-text">Fetch Info</span>
+                        <span class="btn-loader hidden" id="btnLoader"></span>
+                    </button>
+                </div>
+
+                <div id="videoInfo" class="video-info hidden">
+                    <div class="video-header">
+                        <div class="video-metadata">
+                            <h3 id="videoTitle" class="video-title"></h3>
+                            <div class="video-stats">
+                                <span class="stat">
+                                    <strong>Duration:</strong>
+                                    <span id="videoDuration">--:--</span>
+                                </span>
+                                <span class="stat">
+                                    <strong>Uploader:</strong>
+                                    <span id="videoUploader">Unknown</span>
+                                </span>
+                                <span class="stat">
+                                    <strong>Views:</strong>
+                                    <span id="videoViews">0</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="format-selector">
+                        <label for="qualitySelect" class="format-label">Select Quality:</label>
+                        <select id="qualitySelect" class="quality-dropdown">
+                            <option value="">Loading formats...</option>
+                        </select>
+                    </div>
+
+                    <button id="downloadBtn" class="btn btn-success" aria-label="Download video">
+                        <span class="btn-text">Download</span>
+                        <span class="btn-loader hidden" id="downloadLoader"></span>
+                    </button>
+
+                    <div id="downloadStatus" class="status-message hidden"></div>
+                </div>
+
+                <div id="errorMessage" class="error-message hidden"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2>Why Choose PrivateTube?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Private</h3>
+                    <p>All processing happens on your computer. No data collection or tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>No Dependencies</h3>
+                    <p>Built from scratch using Python standard library. Minimal overhead.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast & Efficient</h3>
+                    <p>Lightweight server with minimal memory footprint.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Clean Interface</h3>
+                    <p>Intuitive and beautiful UI inspired by modern streaming services.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Fully Responsive</h3>
+                    <p>Works seamlessly on desktop, tablet, and mobile devices.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Open Source</h3>
+                    <p>Transparent and community-driven. Review the code anytime.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history" class="section">
+            <div class="section-header">
+                <h2>Download History</h2>
+                <p>Your recent downloads</p>
+            </div>
+            <div id="historyContainer" class="history-grid">
+                <div class="loading-placeholder">
+                    <span>Loading history...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy Section -->
+        <section id="privacy" class="section">
+            <div class="section-header">
+                <h2>Privacy & Security</h2>
+                <p>Your data is yours alone</p>
+            </div>
+            <div class="privacy-card">
+                <div id="privacyInfo" class="privacy-info">
+                    <div class="loading-placeholder">
+                        <span>Loading privacy information...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PrivateTube. Built with privacy in mind.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">Report Issue</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
