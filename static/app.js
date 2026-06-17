@@ -55,6 +55,13 @@ class PrivateTubeApp {
 
         try {
             const response = await fetch(`/api/video-info?url=${encodeURIComponent(url)}`);
+            
+            if (!response.ok) {
+                this.showError(`Server error: ${response.status} ${response.statusText}`);
+                this.hideLoading(this.fetchBtn, this.btnLoader);
+                return;
+            }
+            
             const data = await response.json();
 
             if (data.error) {
@@ -71,8 +78,8 @@ class PrivateTubeApp {
             this.videoInfo.classList.remove('hidden');
             this.errorMessage.classList.add('hidden');
         } catch (error) {
-            this.showError('Failed to fetch video info. Please check your URL.');
-            console.error(error);
+            this.showError(`Failed to fetch video info: ${error.message || 'Network error'}`);
+            console.error('Fetch error:', error);
         } finally {
             this.hideLoading(this.fetchBtn, this.btnLoader);
         }
@@ -109,6 +116,11 @@ class PrivateTubeApp {
             const response = await fetch(
                 `/api/formats?video_id=${encodeURIComponent(this.currentVideoId)}`
             );
+            
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            
             const data = await response.json();
 
             this.qualitySelect.innerHTML = '';
@@ -136,6 +148,13 @@ class PrivateTubeApp {
             const response = await fetch(
                 `/api/download?video_id=${encodeURIComponent(this.currentVideoId)}&title=${encodeURIComponent(this.currentTitle)}`
             );
+            
+            if (!response.ok) {
+                this.showError(`Server error: ${response.status} ${response.statusText}. Make sure the server is running.`);
+                this.hideLoading(this.downloadBtn, this.downloadLoader);
+                return;
+            }
+            
             const data = await response.json();
 
             if (data.success) {
@@ -149,8 +168,8 @@ class PrivateTubeApp {
                 this.showError(data.error || 'Download failed');
             }
         } catch (error) {
-            this.showError('Failed to download video');
-            console.error(error);
+            this.showError(`Failed to download video: ${error.message || 'Check if server is running at http://localhost:8000'}`);
+            console.error('Download error:', error);
         } finally {
             this.hideLoading(this.downloadBtn, this.downloadLoader);
         }
@@ -159,6 +178,11 @@ class PrivateTubeApp {
     async loadHistory() {
         try {
             const response = await fetch('/api/history');
+            
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            
             const data = await response.json();
 
             this.historyContainer.innerHTML = '';
@@ -204,6 +228,11 @@ class PrivateTubeApp {
     async loadPrivacyInfo() {
         try {
             const response = await fetch('/api/privacy');
+            
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            
             const data = await response.json();
 
             this.privacyInfo.innerHTML = '';

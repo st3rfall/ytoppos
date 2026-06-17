@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrivateTube - Privacy-Focused YouTube Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 6rem 0;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .content {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .tech-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .tech-item h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    PrivateTube
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#install">Install</a></li>
+                    <li><a href="#tech">Tech Stack</a></li>
+                    <li><a href="https://github.com/st3rfall/ytoppos" target="_blank">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Download YouTube Videos Privately</h1>
+            <p>A privacy-focused YouTube downloader built from scratch with Python. Zero dependencies. Zero tracking.</p>
+            <div class="cta-buttons">
+                <a href="#install" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/st3rfall/ytoppos" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2 id="features">✨ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🔒</div>
+                    <h3>100% Private</h3>
+                    <p>All processing happens locally on your computer. No data collection or tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚙️</div>
+                    <h3>Zero Dependencies</h3>
+                    <p>Built entirely from scratch using only Python's standard library.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎨</div>
+                    <h3>Beautiful UI</h3>
+                    <p>Netflix-inspired design with smooth animations and intuitive interface.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📱</div>
+                    <h3>Fully Responsive</h3>
+                    <p>Works perfectly on desktop, tablet, and mobile devices.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>Fast & Lightweight</h3>
+                    <p>Minimal resource consumption with quick startup and response times.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌐</div>
+                    <h3>Open Source</h3>
+                    <p>Transparent and community-driven. Review the code anytime.</p>
+                </div>
+            </div>
+
+            <h2 id="install">🚀 Quick Start</h2>
+            <h3>Requirements</h3>
+            <p>Just Python 3.6+ and a web browser. That's it!</p>
+
+            <h3>Installation</h3>
+            <div class="code-block">git clone https://github.com/st3rfall/ytoppos.git
+cd ytoppos
+python app.py</div>
+
+            <p>The application will automatically open in your browser at <code style="background: #f0f0f0; padding: 0.2rem 0.4rem; border-radius: 0.3rem;">http://localhost:8000</code></p>
+
+            <h3>Usage</h3>
+            <div class="code-block"># Start with default settings
+python app.py
+
+# Use custom port
+python app.py --port 3000
+
+# Make server accessible on network
+python app.py --host 0.0.0.0
+
+# Enable safe mode on restricted devices
+python app.py --auto
+
+# Show all options
+python app.py --help</div>
+
+            <h2 id="tech">🛠️ Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <h4>Backend</h4>
+                    <p>Python 3.6+ with standard library only: http.server, urllib, json, re, pathlib</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Frontend</h4>
+                    <p>HTML5, CSS3 with modern layouts (Grid, Flexbox), and Vanilla JavaScript</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Design</h4>
+                    <p>Netflix-inspired dark theme with responsive mobile-first design</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Privacy</h4>
+                    <p>100% local processing. No external APIs. No data collection.</p>
+                </div>
+            </div>
+
+            <h3>Code Statistics</h3>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li><strong>Total Lines of Code:</strong> 2,200+</li>
+                <li><strong>Python Backend:</strong> 1,000+ lines</li>
+                <li><strong>Frontend (HTML/CSS/JS):</strong> 1,200+ lines</li>
+                <li><strong>External Dependencies:</strong> 0 (zero!)</li>
+            </ul>
+
+            <h2>🔐 Privacy Guarantee</h2>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li>✅ No personal data collection</li>
+                <li>✅ No external API calls (except to YouTube itself)</li>
+                <li>✅ No tracking or telemetry</li>
+                <li>✅ No authentication required</li>
+                <li>✅ All data stays on your machine</li>
+                <li>✅ Open source code - fully transparent</li>
+            </ul>
+
+            <h2>📖 Documentation</h2>
+            <p>For more details, see the <a href="https://github.com/st3rfall/ytoppos#readme" style="color: #667eea; text-decoration: none; font-weight: 600;">full README on GitHub</a>.</p>
+
+            <h2>🤝 Contributing</h2>
+            <p>Found a bug? Have a feature request? Feel free to <a href="https://github.com/st3rfall/ytoppos/issues" style="color: #667eea; text-decoration: none; font-weight: 600;">open an issue on GitHub</a>.</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 PrivateTube. Built with privacy in mind. <a href="https://github.com/st3rfall/ytoppos" style="color: white; text-decoration: underline;">View on GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>

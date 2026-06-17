@@ -178,10 +178,16 @@ All logs are automatically saved to `logs/app.log`
 View logs:
 ```bash
 cat logs/app.log
+
+# Or follow logs in real-time
+tail -f logs/app.log
 ```
 
 Clear logs:
-Access through the logger in Python or delete the file manually.
+Access through the logger in Python or delete the file manually:
+```bash
+rm logs/app.log
+```
 
 ## 🔧 Configuration
 
@@ -220,6 +226,14 @@ PrivateTube is optimized for efficiency:
 - **Storage:** Minimal (only downloads stored)
 
 ## 🚨 Troubleshooting
+
+### "Failed to Fetch" Error
+This means the server is not running or not accessible:
+1. Make sure you've started the server with `python app.py`
+2. Check that the browser URL shows `http://localhost:8000`
+3. Try using a different port: `python app.py --port 3000`
+4. Check the terminal for error messages
+5. On restricted networks, use safe mode: `python app.py --auto`
 
 ### Port Already in Use
 ```bash
